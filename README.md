@@ -1,5 +1,3 @@
-当然！以下是排好版的 `README.md` 文件，已按 Markdown 格式调整好：
-
 ````markdown
 # WaterDebug
 

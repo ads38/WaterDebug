@@ -724,10 +724,6 @@ class WaterDebugPlugin(idaapi.plugin_t):
             ida_kernwin.warning(f"[WaterDebug] Error generating Frida script: {str(e)}")
 
 
-# IDA 插件入口
-def PLUGIN_ENTRY():
-    return WaterDebugPlugin()
-
 
 # ============================================================
 # IDA 插件入口

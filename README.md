@@ -1,5 +1,4 @@
-````markdown
-# WaterDebug
+### WaterDebug
 
 **WaterDebug** is an IDA Pro plugin designed to streamline the process of debugging `.so` files and generating Frida hook scripts. It simplifies tasks like expression-based jumping during debugging and automates the creation of Frida hook scripts from IDA function prototypes, making reverse engineering more efficient.
 
@@ -34,7 +33,7 @@
    Clone the `WaterDebug` repository to your local machine:
    ```bash
    git clone https://github.com/water5555/WaterDebug.git
-````
+
 
 2. **Install Required Python Dependencies**:
    With your Python environment activated, install the required dependencies using `pip`:

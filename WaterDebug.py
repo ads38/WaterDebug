@@ -640,7 +640,7 @@ def generate_frida_script(func_desc: FuncDesc) -> str:
 
     return "\n".join(script)
 
-
+# 生成frida 脚本
 def waterFrida() -> str | None:
     func_desc = build_func_desc()
     if func_desc is None:
@@ -649,49 +649,24 @@ def waterFrida() -> str | None:
     else:
         return generate_frida_script(func_desc)
 
-def dump_runtime_module_segments():
+# dump module 文件 out_path输出路径
+def dump_runtime_module():
     info = getRuntimeModuleInfo()
     if not info:
         print("[!] no runtime module")
         return
-
     out_path = r"C:\Users\water\Desktop\dump_" + os.path.basename(info.name)
-
-    base = info.base
-    end  = info.base + info.size
-
-    buf = bytearray()
     print(f"[+] dumping module: {info.name}")
-    print(f"    range: 0x{base:X} - 0x{end:X}")
-
-    seg = ida_segment.get_first_seg()
-    while seg:
-        seg_start = seg.start_ea
-        seg_end   = seg.end_ea
-
-        # 只处理落在 module 范围内的 segment
-        if seg_end <= base or seg_start >= end:
-            seg = ida_segment.get_next_seg(seg_start)
-            continue
-
-        read_start = max(seg_start, base)
-        read_end   = min(seg_end, end)
-        size = read_end - read_start
-
-        data = ida_bytes.get_bytes(read_start, size)
-        if data:
-            buf.extend(data)
-            print(f"    dumped segment: 0x{read_start:X}-0x{read_end:X}")
-        else:
-            print(f"    skip unreadable: 0x{read_start:X}")
-
-        seg = ida_segment.get_next_seg(seg_start)
-
-    with open(out_path, "wb") as f:
-        f.write(buf)
-
-    print(f"[+] dump done: {out_path}")
-    print(f"    total size: 0x{len(buf):X}")
+    print(f"    range: 0x{info.base:X} - 0x{info.base + info.size:X}")
+    ida_dbg.refresh_debugger_memory()
+    buf = ida_idd.dbg_read_memory(info.base, info.size)
+    if buf is not None:
+        with open(out_path, "wb") as f:
+            f.write(buf)
+        print(f"[+] dump done: {out_path}")
+        print(f"    total size: 0x{len(buf):X}")
+    else:
+        print("[!] dbg_read_memory failed")
 
 
 class WaterDebugPlugin(idaapi.plugin_t):
@@ -735,7 +710,7 @@ class WaterDebugPlugin(idaapi.plugin_t):
 
     def on_dump(self):
         try:
-            dump_runtime_module_segments()
+            dump_runtime_module()
             ida_kernwin.msg("[WaterDebug] dump triggered\n")
         except Exception as e:
             ida_kernwin.warning(f"[WaterDebug] dump failed: {e}")

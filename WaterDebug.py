@@ -711,8 +711,8 @@ class WaterDebugPlugin(idaapi.plugin_t):
     def term(self):
         ida_kernwin.msg("[WaterDebug] unloaded\n")
 
-    # def run(self, arg):
-    #     self.on_eval()
+    def run(self, arg):
+        ida_kernwin.msg("[WaterDebug] is running...\n")
 
     def on_eval(self):
         expr = ida_kernwin.ask_str("", 0, "WaterDebug expression")

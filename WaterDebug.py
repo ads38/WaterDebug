@@ -1,5 +1,3 @@
-from keystone import *
-
 import ida_ida
 import ida_idd
 import pyperclip
